@@ -39,6 +39,19 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     public function login (Request $request){
-        dd($request->all());
+
+      return redirect('test1');
+//        $request->validate([
+//            'user_name' => 'required',
+//            'password' => 'required',
+//        ]);
+//        $credentials = $request->only('user_name', 'password');
+//        if (Auth::attempt($credentials)) {
+//            return redirect()->intended('dashboard')
+//                ->withSuccess('Signed in');
+//            $this->redirectTo = '/home2';
+//        }
+//        $this->redirectTo = '/home1';
+//        return redirect("login")->withSuccess('Login details are not valid');
     }
 }
