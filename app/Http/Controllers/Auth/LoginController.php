@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     /*
@@ -39,19 +39,27 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     public function login (Request $request){
-
-      return redirect('test1');
+//      return redirect('test1');
 //        $request->validate([
-//            'user_name' => 'required',
+//            'email' => 'required',
 //            'password' => 'required',
 //        ]);
-//        $credentials = $request->only('user_name', 'password');
-//        if (Auth::attempt($credentials)) {
-//            return redirect()->intended('dashboard')
-//                ->withSuccess('Signed in');
-//            $this->redirectTo = '/home2';
-//        }
-//        $this->redirectTo = '/home1';
-//        return redirect("login")->withSuccess('Login details are not valid');
+        $credentials = $request->only('email','password');
+        if (Auth::attempt($credentials)) {
+            $user = Auth::getUser();
+            $token = $user->createToken('authToken')->plainTextToken;
+            dd($token);
+            return redirect()->intended('dashboard')
+                ->withSuccess('Signed in');
+        }
+        return redirect("login")->withSuccess('Login details are not valid');
+    }
+    public function dashboard()
+    {
+        if(Auth::check()){
+            return view('dashboard');
+        }
+
+        return redirect("login")->withSuccess('You are not allowed to access');
     }
 }

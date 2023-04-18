@@ -16,7 +16,10 @@ class TestController extends Controller
     {
         return view('home');
     }
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * @return int
      */
@@ -29,5 +32,8 @@ class TestController extends Controller
      */
     public function home2(){
         return 1;
+    }
+    public function test3(){
+        return 'test3';
     }
 }

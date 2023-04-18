@@ -16,7 +16,7 @@
 
                     {{ __('You are logged in!') }}
                 </div>
-                @vite(['resources/js/app.js'])
+{{--                @vite(['resources/js/app.js'])--}}
             </div>
         </div>
     </div>
