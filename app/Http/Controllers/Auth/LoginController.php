@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 class LoginController extends Controller
 {
     /*
@@ -46,11 +47,11 @@ class LoginController extends Controller
 //        ]);
         $credentials = $request->only('email','password');
         if (Auth::attempt($credentials)) {
-            $user = Auth::getUser();
-            $token = $user->createToken('authToken')->plainTextToken;
-            dd($token);
-            return redirect()->intended('dashboard')
-                ->withSuccess('Signed in');
+//            $user = Auth::getUser();
+//            $token = $user->createToken('authToken')->plainTextToken;
+            $user = User::where('email', $request->email)->first();
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            return redirect()->route('home2')->with(['token'=>$tokenResult ,'role'=>1]);
         }
         return redirect("login")->withSuccess('Login details are not valid');
     }
