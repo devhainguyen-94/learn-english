@@ -26,7 +26,8 @@ class RedirectIfAuthenticated
                 return redirect(RouteServiceProvider::HOME);
             }
         }
-
+        
         return $next($request);
+        // return  response('You are not login' , 403)->header('Content-Type', 'text/plain');
     }
 }

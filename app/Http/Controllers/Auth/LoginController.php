@@ -8,8 +8,34 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+/**
+ * @OA\Post(
+ * path="/api/login",
+ * summary="Sign in",
+ * description="Login by user name , password",
+ * operationId="authLogin",
+ * tags={"auth"},
+ * @OA\RequestBody(
+ *    required=true,
+ *    description="Pass user credentials",
+ *    @OA\JsonContent(
+ *       required={"user_name","password"},
+ *       @OA\Property(property="user_name", type="string", format="user_name", example="admin"),
+ *       @OA\Property(property="password", type="string", format="password", example="12345678"),
+ *    ),
+ * ),
+ * @OA\Response(
+ *    response=422,
+ *    description="Wrong credentials response",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+ *        )
+ *     )
+ * )
+ */
 class LoginController extends Controller
 {
+    
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -41,7 +67,7 @@ class LoginController extends Controller
     }
     public function login (Request $request){
         try{
-            $credentials = $request->only(' user_name','password');
+            $credentials = $request->only('user_name','password');
             if (Auth::attempt($credentials)) {
                 $user = Auth::getUser();
                 $token = $user->createToken('authToken')->plainTextToken;
