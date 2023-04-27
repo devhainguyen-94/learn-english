@@ -13,9 +13,20 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
-    Route::post('/create-class', [App\Http\Controllers\Api\UserCOntroller::class, 'createClass'])
+    Route::middleware(['admin'])->group(function () {
+        /**
+         * Create User
+         */
+        Route::post('/create-user', [App\Http\Controllers\Api\UserController::class, 'createUser']);
+        /**
+         * Class action
+         */
+        Route::post('/create-class', [App\Http\Controllers\Api\UserController::class, 'createClass']);
+        Route::put('/update-class/{id}', [App\Http\Controllers\Api\UserController::class, 'updateClass']);
+        Route::delete('/delete-class/{id}', [App\Http\Controllers\Api\UserController::class, 'destroy']);
+    });
 });
 
 

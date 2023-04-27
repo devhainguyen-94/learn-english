@@ -35,7 +35,7 @@ use App\Models\User;
  */
 class LoginController extends Controller
 {
-    
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -77,6 +77,11 @@ class LoginController extends Controller
                     'token_type' => 'Bearer',
                 ]);
             }
+            return response()->json([
+                'status_code' => 505,
+                'message' => 'user name or password is wrong',
+                'token_type' => 'Bearer',
+            ]);
         }
         catch (\Exception $error){
             return response()->json([

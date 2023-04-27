@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\ClassModels;
-
+use App\Models\ClassModel;
+use PHPUnit\Exception;
+use Illuminate\Support\Facades\Hash;
 /**
  * @OA\Post(
  * path="/api/login",
@@ -37,18 +40,113 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function __construct()
+
+    public function createClass(Request $request)
     {
-    }
-    public function createClass(Request $request){
-        $class = ClassModel::where('name', $request->username)->first();
 
-        if(!$class){
-            $class = ClassModel::create([
-                'name' => $request->classname,
+        try {
+            $class = ClassModel::where('name', $request->classname)->first();
+            if (!$class) {
+                $class = ClassModel::create([
+                    'name' => $request->classname,
+                ]);
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => 'Create success',
+                ]);
+            }
+            return response()->json([
+                'status_code' => 500,
+                'error' => 'Class is exist',
             ]);
-}
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'error' => $e,
+            ]);
+        }
 
     }
-    
+
+    public function updateClass(Request $request, $id)
+    {
+        try {
+            $class = ClassModel::find($id);
+            if ($class) {
+                $class->name = $request->class_name;
+                $class->save();
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => 'Update success',
+                ]);
+            }
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Class is not exist'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+    }
+
+    public function destroy($id)
+    {
+        try {
+           $result =  ClassModel::find($id);
+           if($result){
+               ClassModel::destroy($id);
+               return response()->json([
+                   'status_code' => 200,
+                   'message' => "Delete success",
+               ]);
+           }
+            return response()->json([
+                'status_code' => 500,
+                'message' => "Class is not exist",
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+    /**
+     * Create User
+     */
+    public function createUser(Request $request){
+        try {
+        $user = User::where('user_name', $request->username)->first();
+        if(!$user){
+            $result = User::create([
+                'user_name' => $request->username,
+                'role'=> $request->role,
+                'password' => Hash::make($request->password)
+            ]);
+            if($result){
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => "Create User success",
+                ]);
+            }
+            return response()->json([
+                'status_code' => 500,
+                'message' => "Create User fail",
+            ]);
+        }
+            return response()->json([
+                'status_code' => 500,
+                'message' => "User name is exist",
+            ]);
+        }catch (Exception $e){
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }
