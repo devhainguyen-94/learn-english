@@ -13,15 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('card_details', function (Blueprint $table) {
+        Schema::create('group_cards', function (Blueprint $table) {
             $table->id();
-            $table->string('word');
-            $table->string('means');
-            $table->string('spelling');
-            $table->string('word_type');
-            $table->string('audio_link');
-            $table->text('example');
-            $table->integer('type_card');
+            $table->string('group_name')->unique();
+            $table->integer('time_to_complete')->default(0);
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('card_details');
+        Schema::dropIfExists('group_cards');
     }
 };

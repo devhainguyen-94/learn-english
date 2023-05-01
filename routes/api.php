@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['admin'])->group(function () {
+        Route::post('/create-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
         /**
          * Create User
          */
@@ -26,7 +27,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/create-class', [App\Http\Controllers\Api\UserController::class, 'createClass']);
         Route::put('/update-class/{id}', [App\Http\Controllers\Api\UserController::class, 'updateClass']);
         Route::delete('/delete-class/{id}', [App\Http\Controllers\Api\UserController::class, 'destroy']);
+        Route::get('/get-user', [App\Http\Controllers\Api\UserController::class, 'getUser']);
+        Route::get('/get-all-class', [App\Http\Controllers\Api\UserController::class, 'getAllClass']);
     });
+
 });
 
 

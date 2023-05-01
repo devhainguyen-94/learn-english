@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -146,6 +146,37 @@ class UserController extends Controller
             return response()->json([
                 'status_code' => 500,
                 'message' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function getUser(){
+        try{
+            $user =  Auth::user();
+            return response()->json([
+                'status_code' => 200,
+                'data' =>$user
+            ]);
+        }
+        catch (Exception $e){
+            return response()->json([
+                'status_code' => 500,
+                'message' =>$e->getMessage(),
+            ]);
+        }
+
+    }
+    public function getAllClass(){
+        try{
+            $allClass = ClassModel::all();
+            return response()->json([
+                'status_code' => 200,
+                'data' =>$allClass
+            ]);
+        }
+        catch (\Exception $e){
+            return response()->json([
+                'status_code' => 500,
+                'message' =>$e->getMessage(),
             ]);
         }
     }
