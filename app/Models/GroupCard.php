@@ -11,7 +11,7 @@ class GroupCard extends Model
 {
     protected $table = 'group_cards';
     use HasFactory;
-    protected $fillable = [ 'group_name','time_to_complete'];
+    protected $fillable = [ 'group_name','time_to_complete','folder_id'];
     /**
      * Relation Detail
      */

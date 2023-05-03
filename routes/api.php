@@ -16,7 +16,20 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['admin'])->group(function () {
+        /**
+         * Group Action Folder
+         */
+        Route::get('/get-list-folder',[App\Http\Controllers\Api\FolderController::class, 'getListFolder']);
+        Route::post('/create-folder',[App\Http\Controllers\Api\FolderController::class, 'createFolder']);
+        Route::put('/update-folder/{id}',[App\Http\Controllers\Api\FolderController::class, 'updateFolder']);
+        Route::delete('/delete-folder/{id}',[App\Http\Controllers\Api\FolderController::class, 'deleteFolder']);
+        /**
+         * Group Action Group Card
+         */
+        Route::get('/get-list-group-card/{id}',[App\Http\Controllers\Api\CardController::class, 'getListGroupCard']);
         Route::post('/create-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
+        Route::put('/update-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
+        Route::delete('/delete-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
         /**
          * Create User
          */
