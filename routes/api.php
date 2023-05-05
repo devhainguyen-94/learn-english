@@ -19,14 +19,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         /**
          * Group Action Folder
          */
-        Route::get('/get-list-folder',[App\Http\Controllers\Api\FolderController::class, 'getListFolder']);
-        Route::post('/create-folder',[App\Http\Controllers\Api\FolderController::class, 'createFolder']);
-        Route::put('/update-folder/{id}',[App\Http\Controllers\Api\FolderController::class, 'updateFolder']);
-        Route::delete('/delete-folder/{id}',[App\Http\Controllers\Api\FolderController::class, 'deleteFolder']);
+        Route::get('/get-list-folder', [App\Http\Controllers\Api\FolderController::class, 'getListFolder']);
+        Route::post('/create-folder', [App\Http\Controllers\Api\FolderController::class, 'createFolder']);
+        Route::put('/update-folder/{id}', [App\Http\Controllers\Api\FolderController::class, 'updateFolder']);
+        Route::delete('/delete-folder/{id}', [App\Http\Controllers\Api\FolderController::class, 'deleteFolder']);
         /**
          * Group Action Group Card
          */
-        Route::get('/get-list-group-card/{id}',[App\Http\Controllers\Api\CardController::class, 'getListGroupCard']);
+        Route::get('/get-list-group-card/{id}', [App\Http\Controllers\Api\CardController::class, 'getListGroupCard']);
         Route::post('/create-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
         Route::put('/update-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
         Route::delete('/delete-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
@@ -43,7 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-user', [App\Http\Controllers\Api\UserController::class, 'getUser']);
         Route::get('/get-all-class', [App\Http\Controllers\Api\UserController::class, 'getAllClass']);
     });
-
+    Route::get('/get-list-group-card', [App\Http\Controllers\Api\CardController::class, 'getListGroupCardByUser']);
 });
 
 

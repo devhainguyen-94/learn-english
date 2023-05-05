@@ -35,6 +35,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'password_not_encode'
     ];
     public function userClass() : BelongsTo
     {

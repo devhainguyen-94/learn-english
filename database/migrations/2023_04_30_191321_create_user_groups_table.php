@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('group_id');
+            $table->integer('type');
             $table->integer('const');
             $table->timestamps();
         });

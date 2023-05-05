@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             'user_name' => 'admin',
             'role'=> 0,
             'password' => Hash::make('12345678'),
+            'password_not_encode' =>'12345678',
+
         ]);
     }
 }

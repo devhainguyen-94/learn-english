@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('user_learn_cards', function (Blueprint $table) {
             $table->id();
-            $table->string('user_name')->unique();
-            $table->integer('role')->default(0);
-            $table->string('password');
-            $table->string('password_not_encode');
-            $table->unsignedInteger('class_id')->default(0);
-            $table->rememberToken();
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('group_card_id');
+            $table->unsignedInteger('card_detail_id');
+            $table->dateTimeTz('time_remind');
+            $table->integer('time_avg');
+            $table->integer('coefficient');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_learn_cards');
     }
 };

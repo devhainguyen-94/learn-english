@@ -7,6 +7,7 @@ use App\Models\GroupCard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ClassModel;
+use Illuminate\Support\Facades\Auth;
 use PHPUnit\Exception;
 use Illuminate\Support\Facades\Hash;
 
@@ -37,6 +38,15 @@ use Illuminate\Support\Facades\Hash;
  */
 class CardController extends Controller
 {
+    public function getListGroupCardByUser(){
+        $userId = Auth::user()->id;
+
+    }
+    /**
+     * Get list group card in admin
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getListGroupCard($id){
         try {
             $listGroupCard = GroupCard::where('folder_id', $id)->get();
