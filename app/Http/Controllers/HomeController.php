@@ -26,18 +26,4 @@ class HomeController extends Controller
         return 1;
         // return view('home');
     }
-
-    /**
-     * @return int
-     */
-    public function home1(){
-        return 1;
-    }
-
-    /**
-     * @return int
-     */
-    public function home2(){
-        return 1;
-    }
 }

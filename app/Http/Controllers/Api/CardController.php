@@ -5,11 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Models\CardDetail;
 use App\Models\GroupCard;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\UserGroup;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ClassModel;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Exception;
 use Illuminate\Support\Facades\Hash;
+use App\Models\UserLearnCard;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @OA\Post(
@@ -38,24 +45,71 @@ use Illuminate\Support\Facades\Hash;
  */
 class CardController extends Controller
 {
-    public function getListGroupCardByUser(){
-        $userId = Auth::user()->id;
+
+    use HasFactory, Notifiable, HasApiTokens;
+
+    public function getListGroupCardByUser()
+    {
+        try {
+            $userId = Auth::user()->id;
+            $user = User::find($userId);
+            $listCard = [];
+            $numberCardRemaining = 0;
+            $allCardNew = 0 ;
+            $time =  UserLearnCard::where('user_id', $userId)->whereBetween('updated_at',
+                [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()]
+            )->avg('time_avg');
+            $timeAVG = $time == null ? UserLearnCard::where('user_id', $userId)->avg('time_avg') : $time;
+            $numberCardLearned = count(UserLearnCard::where('user_id', $userId)->whereColumn('updated_at', '>', 'created_at')->whereDate('updated_at', Carbon::today())->get());
+            $totalTimeLearnedToday = UserLearnCard::where('user_id', $userId)->whereColumn('updated_at', '>', 'created_at')->whereDate('updated_at', Carbon::today())->sum('time_avg');
+            foreach ($user->userGroup as $group) {
+                $info = [];
+
+                $numberCardRemaining += count(UserLearnCard::where('user_id', $userId)
+                    ->where('group_id', $group->id)->where('time_remind', '<', Carbon::now())->get());
+                $cardNew = UserLearnCard::where('user_id', $userId)->where('group_id', $group->id)->where('time_avg', 0)->get();
+                $allCardNew += count($cardNew);
+                $carPractive = UserLearnCard::where('user_id', $userId)
+                    ->where('group_id', $group->id)->where('time_remind', '<', Carbon::now())->where('time_avg', '!=', 0)->get();
+                $info['number_card_new'] = count($cardNew);
+                $info['number_card_practice'] = count($carPractive);
+                $info['group_info'] = $group;
+                array_push($listCard, $info);
+            }
+            $data['list_card'] = $listCard;
+            $totalCard = ($allCardNew*3) + $numberCardRemaining;
+            $data['remaining_info']['number_card_remaining'] = (int)$numberCardRemaining;
+            $data['remaining_info']['time_remaining'] = $totalCard * $timeAVG ;
+            $data['learned_info']['number_card_learned'] = (int)$numberCardLearned;
+            $data['learned_info']['all_time_learned'] = (int)$totalTimeLearnedToday;
+            return response()->json([
+                'status_code' => 200,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e
+            ]);
+        }
+
 
     }
+
     /**
      * Get list group card in admin
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getListGroupCard($id){
+    public function getListGroupCard($id)
+    {
         try {
             $listGroupCard = GroupCard::where('folder_id', $id)->get();
             return response()->json([
                 'status_code' => 200,
                 'data' => $listGroupCard
             ]);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'status_code' => 500,
                 'message' => $e
@@ -63,6 +117,7 @@ class CardController extends Controller
         }
 
     }
+
     /**
      * Create a new controller instance.
      *
@@ -92,6 +147,7 @@ class CardController extends Controller
             ]);
         }
     }
+
     public function createCardDetail(Request $request)
     {
         try {

@@ -43,6 +43,6 @@ class User extends Authenticatable
     }
     public function userGroup() :BelongsToMany
     {
-        return $this->belongsToMany(GroupCard::class,'user_groups', 'group_card_id', 'user_id' );
+        return $this->belongsToMany(GroupCard::class,'user_groups','user_id', 'group_id' );
     }
 }

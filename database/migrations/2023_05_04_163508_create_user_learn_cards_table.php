@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('user_learn_cards', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('group_card_id');
+            $table->unsignedInteger('group_id');
             $table->unsignedInteger('card_detail_id');
             $table->dateTimeTz('time_remind');
             $table->integer('time_avg');

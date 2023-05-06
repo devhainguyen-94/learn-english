@@ -15,8 +15,12 @@ class GroupCard extends Model
     /**
      * Relation Detail
      */
-    public function cardDetail(): BelongsToMany
-    {
-        return $this->belongsToMany(CardDetail::class , 'card_detail_group', 'card_detail_id','group_card_id');
-    }
+//    public function cardDetail(): BelongsToMany
+//    {
+//        return $this->belongsToMany(CardDetail::class , 'card_detail_group', 'card_detail_id','group_card_id');
+//    }
+        public function cardDetailGroup():HasMany
+        {
+            return $this->hasMany(CardDetailGroup::class , 'group_id','id');
+        }
 }

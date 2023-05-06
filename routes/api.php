@@ -43,6 +43,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-user', [App\Http\Controllers\Api\UserController::class, 'getUser']);
         Route::get('/get-all-class', [App\Http\Controllers\Api\UserController::class, 'getAllClass']);
     });
+    /**
+     *
+     */
     Route::get('/get-list-group-card', [App\Http\Controllers\Api\CardController::class, 'getListGroupCardByUser']);
 });
 

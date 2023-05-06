@@ -75,13 +75,15 @@ class LoginController extends Controller
                     'status_code' => 200,
                     'access_token' => $token,
                     'token_type' => 'Bearer',
+                    'role'=>$user->role
+                ]);
+            }else{
+                return response()->json([
+                    'status_code' => 505,
+                    'message' => 'user name or password is wrong',
                 ]);
             }
-            return response()->json([
-                'status_code' => 505,
-                'message' => 'user name or password is wrong',
-                'token_type' => 'Bearer',
-            ]);
+
         }
         catch (\Exception $error){
             return response()->json([

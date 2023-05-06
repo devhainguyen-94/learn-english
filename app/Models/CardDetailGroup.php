@@ -14,7 +14,7 @@ class CardDetailGroup extends Model
      * Define table name
      * @var string table
      */
-    protected $table = 'card_detail_group';
+    protected $table = 'card_detail_groups';
 
     /**
      * @var string[]

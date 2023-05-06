@@ -9,9 +9,11 @@ use PHPUnit\Exception;
 
 class FolderController extends Controller
 {
+
     public function getListFolder(){
         try {
-            $listFolder = Folder::all();
+
+            $listFolder = Folder::with('groupCard')->get();
             return response()->json([
                 'status_code' => 200,
                 'data'=>$listFolder
@@ -39,7 +41,7 @@ class FolderController extends Controller
             if ($result) {
                 return response()->json([
                     'status_code' => 200,
-                    'message' => "create group card success"
+                    'message' => "Create Folder success"
                 ]);
             }
             return response()->json([
