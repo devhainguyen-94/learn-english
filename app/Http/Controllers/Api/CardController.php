@@ -55,8 +55,8 @@ class CardController extends Controller
             $user = User::find($userId);
             $listCard = [];
             $numberCardRemaining = 0;
-            $allCardNew = 0 ;
-            $time =  UserLearnCard::where('user_id', $userId)->whereBetween('updated_at',
+            $allCardNew = 0;
+            $time = UserLearnCard::where('user_id', $userId)->whereBetween('updated_at',
                 [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()]
             )->avg('time_avg');
             $timeAVG = $time == null ? UserLearnCard::where('user_id', $userId)->avg('time_avg') : $time;
@@ -77,9 +77,9 @@ class CardController extends Controller
                 array_push($listCard, $info);
             }
             $data['list_card'] = $listCard;
-            $totalCard = ($allCardNew*3) + $numberCardRemaining;
+            $totalCard = ($allCardNew * 3) + $numberCardRemaining;
             $data['remaining_info']['number_card_remaining'] = (int)$numberCardRemaining;
-            $data['remaining_info']['time_remaining'] = $totalCard * $timeAVG ;
+            $data['remaining_info']['time_remaining'] = $totalCard * $timeAVG;
             $data['learned_info']['number_card_learned'] = (int)$numberCardLearned;
             $data['learned_info']['all_time_learned'] = (int)$totalTimeLearnedToday;
             return response()->json([
@@ -148,6 +148,59 @@ class CardController extends Controller
         }
     }
 
+    public function updateGroupCard(Request $request, $id)
+    {
+        try {
+            $groupCard = GroupCard::find($id);
+            if (isset($request['group-name'])) {
+                $checkExist = GroupCard::where('group_name', $request['group-name'])->count();
+                if ($checkExist) {
+                    return response()->json([
+                        'status_code' => 500,
+                        'message' => "Group Name is exist"
+                    ]);
+                }
+                $groupCard->group_name = $request['group-name'];
+            }
+            if (isset($request['folder-id'])) {
+                $groupCard->folder_id = $request['folder-id'];
+            }
+            $groupCard->save();
+            return response()->json([
+                'status_code' => 200,
+                'message' => "Update group card success"
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function deleteGroupCard($id)
+    {
+        try {
+            $groupCard = GroupCard::find($id);
+            $result = $groupCard->delete();
+            if($result){
+                return response()->json([
+                    'status_code' => 200,
+                    'message' => 'Delete Group Card is success'
+                ]);
+            }
+            return response()->json([
+                'status_code' => 500,
+                'message' => 'Delete Folder is failure'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
     public function createCardDetail(Request $request)
     {
         try {

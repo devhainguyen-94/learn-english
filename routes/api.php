@@ -28,19 +28,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
          */
         Route::get('/get-list-group-card/{id}', [App\Http\Controllers\Api\CardController::class, 'getListGroupCard']);
         Route::post('/create-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
-        Route::put('/update-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
-        Route::delete('/delete-group-card', [App\Http\Controllers\Api\CardController::class, 'createGroupCard']);
+        Route::put('/update-group-card/{id}', [App\Http\Controllers\Api\CardController::class, 'updateGroupCard']);
+        Route::delete('/delete-group-card/{id}', [App\Http\Controllers\Api\CardController::class, 'deleteGroupCard']);
         /**
          * Create User
          */
+        Route::get('/get-list-user/{name?}-{id?}',[App\Http\Controllers\Api\UserController::class, 'getListUser']);
         Route::post('/create-user', [App\Http\Controllers\Api\UserController::class, 'createUser']);
+        Route::put('/update-user/{id}', [App\Http\Controllers\Api\UserController::class, 'updateUser']);
+        Route::delete('/delete-use/{id}', [App\Http\Controllers\Api\UserController::class, 'deleteUser']);
         /**
          * Class action
          */
         Route::post('/create-class', [App\Http\Controllers\Api\UserController::class, 'createClass']);
         Route::put('/update-class/{id}', [App\Http\Controllers\Api\UserController::class, 'updateClass']);
-        Route::delete('/delete-class/{id}', [App\Http\Controllers\Api\UserController::class, 'destroy']);
-        Route::get('/get-user', [App\Http\Controllers\Api\UserController::class, 'getUser']);
+        Route::delete('/delete-class/{id}', [App\Http\Controllers\Api\UserController::class, 'deleteClass']);
         Route::get('/get-all-class', [App\Http\Controllers\Api\UserController::class, 'getAllClass']);
     });
     /**
