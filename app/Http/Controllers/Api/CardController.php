@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\CardDetail;
+use App\Models\CardDetailGroup;
 use App\Models\GroupCard;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -184,7 +185,7 @@ class CardController extends Controller
         try {
             $groupCard = GroupCard::find($id);
             $result = $groupCard->delete();
-            if($result){
+            if ($result) {
                 return response()->json([
                     'status_code' => 200,
                     'message' => 'Delete Group Card is success'
@@ -201,6 +202,7 @@ class CardController extends Controller
             ]);
         }
     }
+
     public function createCardDetail(Request $request)
     {
         try {
@@ -252,6 +254,39 @@ class CardController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    private function assignUserForGroupCard($userId, $groupCardId, $type)
+    {
+        try {
+            $checkExist = count(UserGroup::where('group_id', $groupCardId)->where('user_id')->where('type', $type)->get());
+            if (!$checkExist) {
+                UserGroup::created([
+                    'user_id' => $userId,
+                    'group_id' => $groupCardId,
+                    'type' => $type,
+                    'const' => 1
+                ]);
+                $listCardDetail = CardDetailGroup::where('group_id', $groupCardId)->get();
+                foreach ($listCardDetail as $card) {
+                    $checkUserLearnCardExist = UserLearnCard::where('user_id', $userId)->where('group_id', $groupCardId)
+                        ->where('card_detail_id', $card->card_detail_id)->get();
+                    if (!$checkUserLearnCardExist) {
+                        UserLearnCard::created([
+                            'user_id' => $userId,
+                            'group_id' => $groupCardId,
+                            'card_detail_id' => $card->card_detail_id,
+                            'time_remind' => Carbon::now(),
+                            'times' => 0
+                        ]);
+                    }
+                }
+            }
+
+        } catch (Exception $e) {
+            throw $e;
+        }
+
     }
 
 }

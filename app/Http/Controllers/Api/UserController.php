@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\CardDetailGroup;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -9,7 +10,8 @@ use Illuminate\Http\Request;
 use App\Models\ClassModel;
 use PHPUnit\Exception;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 /**
  * @OA\Post(
  * path="/api/login",
@@ -175,6 +177,7 @@ class UserController extends Controller
     public function getListUser($name = 0, $id = 0)
     {
         try {
+
             $listId = [];
             if($id != 0){
                 $listId = explode(',',$id);
@@ -189,7 +192,7 @@ class UserController extends Controller
             })->get();
             return response()->json([
                 'status_code' => 200,
-                'data' => $user
+                'data' => $data
             ]);
         } catch (Exception $e) {
             return response()->json([
