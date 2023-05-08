@@ -8,6 +8,7 @@ use App\Models\GroupCard;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserGroup;
+use App\Models\UserLearnHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ClassModel;
@@ -287,6 +288,37 @@ class CardController extends Controller
             throw $e;
         }
 
+    }
+
+    public function learnCard(Request $request){
+        try{
+            $userId = Auth::user()->id;
+            $userLearnCard = UserLearnCard::where('card_detail_id',$request['card_detail_id'])->where('group_id',$request['group-id'])
+                ->where('user_id',$userId)->get();
+            $userLearnHistory = (UserLearnHistory::where('user_learn_card_id', $userLearnCard->id)->whereDate('updated_at',Carbon::now())->get());
+            if(count($userLearnHistory)){
+                $userLearnHistory->time_learn ++;
+                $userLearnHistory->save();
+            }else{
+                UserLearnHistory::created([
+                    'user_learn_card_id'=>$userLearnCard->id ,
+                    'time_learn'=>$request['time-learn']
+                ]);
+            }
+            $userLearnCard->times ++;
+            $userLearnCard->time_remind = $this->calculationTimeRemind();
+            $userLearnCard->save();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status_code' => 500,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+    }
+    private function calculationTimeRemind(){
+        return 0;
     }
 
 }

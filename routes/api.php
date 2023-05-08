@@ -46,9 +46,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-all-class', [App\Http\Controllers\Api\UserController::class, 'getAllClass']);
     });
     /**
-     *
+     * Action Card
      */
     Route::get('/get-list-group-card', [App\Http\Controllers\Api\CardController::class, 'getListGroupCardByUser']);
+    Route::post('/learn-card', [App\Http\Controllers\Api\CardController::class, 'learnCard']);
 });
 
 
