@@ -9,5 +9,5 @@ class UserLearnCard extends Model
 {
     use HasFactory;
     protected $table = 'user_learn_cards';
-    protected $fillable = ['user_id', 'group_card_id','card_detail_id','time_remind','time_avg','coefficient'];
+    protected $fillable = ['user_id', 'group_card_id','card_detail_id','time_remind','const_q','times_learn_again','timme_learn'];
 }

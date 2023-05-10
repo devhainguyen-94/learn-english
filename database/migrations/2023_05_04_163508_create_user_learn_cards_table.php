@@ -19,8 +19,13 @@ return new class extends Migration
             $table->unsignedInteger('group_id');
             $table->unsignedInteger('card_detail_id');
             $table->dateTimeTz('time_remind');
-            $table->integer('time_avg');
-            $table->integer('coefficient');
+            $table->integer('const_q');
+            $table->integer('times_learn_again');
+            $table->integer('time_learn');
+            $table->integer('const_relearn_type')->default(1);
+            $table->integer('const_easy_type')->default(4);
+            $table->integer('const_good_type')->default(10);
+            $table->integer('const_hard_type')->default(4);
             $table->timestamps();
         });
     }
