@@ -296,6 +296,7 @@ class CardController extends Controller
             $userLearnCard = UserLearnCard::where('card_detail_id',$request['card_detail_id'])->where('group_id',$request['group-id'])
                 ->where('user_id',$userId)->get();
             $userLearnHistory = (UserLearnHistory::where('user_learn_card_id', $userLearnCard->id)->whereDate('updated_at',Carbon::now())->get());
+            if($userLearnCard->const_q)
             if(count($userLearnHistory)){
                 $userLearnHistory->time_learn ++;
                 $userLearnHistory->save();
@@ -306,7 +307,7 @@ class CardController extends Controller
                 ]);
             }
             $userLearnCard->times ++;
-            $userLearnCard->time_remind = $this->calculationTimeRemind();
+            $userLearnCard->time_remind = $this->calculationTimeRemind($request['type'], $userLearnCard );
             $userLearnCard->save();
         }
         catch(Exception $e){
@@ -317,8 +318,16 @@ class CardController extends Controller
         }
 
     }
-    private function calculationTimeRemind(){
-        return 0;
+    private function calculationTimeRemind($type ,  UserLearnCard $userLearnCard){
+        switch ($type){
+            case 0 :
+                return [
+                    'const_q' => 0
+                ];
+                break;
+            case 1 :
+
+        }
     }
 
 }
