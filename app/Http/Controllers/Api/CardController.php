@@ -19,6 +19,7 @@ use App\Models\UserLearnCard;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Helper\Constant;
 
 /**
  * @OA\Post(
@@ -290,27 +291,37 @@ class CardController extends Controller
 
     }
 
-    public function learnCard(Request $request){
-        try{
+    public function learnCard(Request $request)
+    {
+        try {
             $userId = Auth::user()->id;
-            $userLearnCard = UserLearnCard::where('card_detail_id',$request['card_detail_id'])->where('group_id',$request['group-id'])
-                ->where('user_id',$userId)->get();
-            $userLearnHistory = (UserLearnHistory::where('user_learn_card_id', $userLearnCard->id)->whereDate('updated_at',Carbon::now())->get());
-            if($userLearnCard->const_q)
-            if(count($userLearnHistory)){
-                $userLearnHistory->time_learn ++;
-                $userLearnHistory->save();
-            }else{
-                UserLearnHistory::created([
-                    'user_learn_card_id'=>$userLearnCard->id ,
-                    'time_learn'=>$request['time-learn']
-                ]);
+            $userLearnCard = UserLearnCard::where('card_detail_id', $request['card_detail_id'])->where('group_id', $request['group-id'])
+                ->where('user_id', $userId)->get();
+            $userLearnHistory = (UserLearnHistory::where('user_learn_card_id', $userLearnCard->id)->whereDate('updated_at', Carbon::now())->get());
+            if ($userLearnCard->const_q)
+                if (count($userLearnHistory)) {
+                    $userLearnHistory->time_learn++;
+                    $userLearnHistory->save();
+                } else {
+                    UserLearnHistory::created([
+                        'user_learn_card_id' => $userLearnCard->id,
+                        'time_learn' => $request['time-learn']
+                    ]);
+                }
+            if (($userLearnCard->const_q == null) &&
+                ($request['type'] == Constant::TYPE_RELEARN || $request['type'] == Constant::TYPE_LEARN_HARD)) {
+                $userLearnCard->time_learn = $request['time'] > 60 ? 60 : $request['time'];
+                $userLearnCard->time_remind = $request['type'] == Constant::TYPE_RELEARN ? Carbon::now()->addMinute() : Carbon::now()->addMinutes(10);
+                $userLearnCard->save();
+            } else if ($userLearnCard->const_q == null && $request['type'] == Constant::TYPE_LEARN_GOOD) {
+                $userLearnCard->const_hard_type = 10;
+                $userLearnCard->const_good_type = 1;
+                $userLearnCard->const_easy_type = 4;
+                $userLearnCard->const_q = 0;
             }
-            $userLearnCard->times ++;
-            $userLearnCard->time_remind = $this->calculationTimeRemind($request['type'], $userLearnCard );
+            $userLearnCard->time_remind = $this->calculationTimeRemind($request['type'], $userLearnCard);
             $userLearnCard->save();
-        }
-        catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'status_code' => 500,
                 'message' => $e->getMessage()
@@ -318,8 +329,10 @@ class CardController extends Controller
         }
 
     }
-    private function calculationTimeRemind($type ,  UserLearnCard $userLearnCard){
-        switch ($type){
+
+    private function calculationTimeRemind($type, UserLearnCard $userLearnCard)
+    {
+        switch ($type) {
             case 0 :
                 return [
                     'const_q' => 0
